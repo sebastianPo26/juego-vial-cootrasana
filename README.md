@@ -8,6 +8,12 @@ Flujo: Inicio (Jugar / Instrucciones en ventana) → Cédula → 14 preguntas �
 Al responder, la opción se pone en amarillo (suspenso) y luego se revela en verde (correcta) o rojo
 (incorrecta), mostrando siempre la decisión segura. Teclado: A/B/C o 1/2/3 para responder, Enter para seguir.
 
+## Versión en PHP
+
+La carpeta **[version-php/](version-php/)** tiene el mismo juego hecho en PHP, para instalarlo en
+un servidor con PHP junto a la base de datos de la empresa. Ver [version-php/LEEME.md](version-php/LEEME.md).
+La página publicada en Netlify usa la versión en React (Netlify no ejecuta PHP).
+
 ## Ejecutar
 
 ```bash
