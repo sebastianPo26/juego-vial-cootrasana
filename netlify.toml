@@ -5,3 +5,19 @@
 
 [build.environment]
   NODE_VERSION = "22"
+  # Cambiar a "servidor" para guardar en la base de datos del juego anterior
+  # (también se puede cambiar en Netlify, en las variables del sitio).
+  VITE_MODO_DATOS = "local"
+
+# ---------------------------------------------------------------------------
+# Reenvío al servidor del juego anterior (DESACTIVADO).
+# Para activarlo, con autorización del área de sistemas:
+#   1. Quita el "#" de las 4 líneas de abajo.
+#   2. Cambia VITE_MODO_DATOS a "servidor" arriba.
+#   3. Sube el cambio a GitHub; Netlify publica solo.
+# Así el navegador ve el servidor como si fuera la misma página y la sesión funciona.
+# ---------------------------------------------------------------------------
+# [[redirects]]
+#   from = "/juego_vial/*"
+#   to = "https://talentohumano.cootrasana.com.co/juego_vial/:splat"
+#   status = 200

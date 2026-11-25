@@ -40,9 +40,8 @@ npm run build     # genera la carpeta dist/ lista para publicar
 `src/data/preguntas.js` tiene las 14 preguntas y las opciones del juego original, palabra por palabra.
 El campo `correcta` indica la opción correcta de cada pregunta.
 
-## Registro de respuestas
+## Registro de respuestas y conector
 
-El original guarda las respuestas por cédula en su servidor. Esta versión las guarda en el navegador
-(`localStorage`): permite retomar una partida y conserva el historial de partidas terminadas en ese equipo.
-Para enviarlas a un servidor o base de datos, cambia las funciones de `src/lib/almacen.js`
-(`ingresar`, `iniciar`, `responder`) por llamadas a tu API. El resto del juego no se toca.
+Por defecto las respuestas se guardan en el navegador de cada persona.
+El conector con la base de datos del juego anterior ya está listo pero apagado:
+ver **[CONECTOR.md](CONECTOR.md)** para activarlo (se cambia `VITE_MODO_DATOS` a `servidor`).

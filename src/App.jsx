@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Logo from './components/Logo';
 import Icono from './components/Icono';
 import { PREGUNTAS, PUNTOS_POR_ACIERTO } from './data/preguntas';
-import * as api from './lib/almacen';
+import * as api from './lib/datos';
 import { alternarSonido, clic, instalarSonido, sonar, sonidoActivo } from './lib/sonido';
 
 const TOTAL = PREGUNTAS.length;
@@ -75,9 +75,13 @@ function Instrucciones({ onCerrar, onJugar }) {
 function Ingreso({ onIngresar, onVolver }) {
   const [ced, setCed] = useState('');
   const [error, setError] = useState('');
-  const enviar = (e) => {
+  const [cargando, setCargando] = useState(false);
+  const enviar = async (e) => {
     e.preventDefault();
-    const r = api.ingresar(ced.trim());
+    if (cargando) return;
+    setCargando(true);
+    const r = await api.ingresar(ced.trim());
+    setCargando(false);
     if (!r.ok) { setError(r.error); sonar('mal'); return; }
     onIngresar(r.jugador);
   };
@@ -97,8 +101,8 @@ function Ingreso({ onIngresar, onVolver }) {
             value={ced} onChange={(e) => { setCed(e.target.value.replace(/\D/g, '')); setError(''); }} />
         </label>
         <p className="msg-error" id="err-ced" role="alert">{error}</p>
-        <button className="btn btn-primario btn-ancho" type="submit" disabled={ced.length < 5}>
-          Comenzar <Icono nombre="adelante" />
+        <button className="btn btn-primario btn-ancho" type="submit" disabled={ced.length < 5 || cargando}>
+          {cargando ? 'Validando cédula…' : <>Comenzar <Icono nombre="adelante" /></>}
         </button>
       </form>
     </main>
@@ -129,7 +133,7 @@ function Escalera({ idx, marcas }) {
 }
 
 /* =========================== JUEGO =========================== */
-function Juego({ jugador, idx, marcas, onRespondida, onSiguiente }) {
+function Juego({ jugador, idx, marcas, onRespondida, onSiguiente, onError }) {
   const p = PREGUNTAS[idx];
   const [elegida, setElegida] = useState(null);
   const [res, setRes] = useState(null); // respuesta del almacén tras revelar
@@ -140,13 +144,13 @@ function Juego({ jugador, idx, marcas, onRespondida, onSiguiente }) {
     if (elegida) return;
     clic();
     setElegida(letra);
-    await esperar(SUSPENSO_MS);
-    const r = api.responder(jugador.documento, p.n, letra);
-    if (!r.ok) { setElegida(null); return; }
+    // El suspenso y la consulta al servidor corren al mismo tiempo.
+    const [r] = await Promise.all([api.responder(jugador.documento, p.n, letra), esperar(SUSPENSO_MS)]);
+    if (!r.ok) { setElegida(null); onError(r); return; }
     setRes(r);
     onRespondida(r);
     sonar(r.es_correcta ? 'ok' : 'mal');
-  }, [elegida, jugador, p.n, onRespondida]);
+  }, [elegida, jugador, p.n, onRespondida, onError]);
 
   useEffect(() => { if (res) siguienteBtn.current?.focus({ preventScroll: true }); }, [res]);
 
@@ -304,8 +308,13 @@ export default function App() {
     avisoT.current = setTimeout(() => setAviso(''), 3500);
   };
 
-  const iniciarPartida = (j) => {
-    const r = api.iniciar(j.documento);
+  const iniciarPartida = async (j) => {
+    const r = await api.iniciar(j.documento);
+    if (!r.ok) {
+      mostrarAviso(r.error);
+      if (r.sesion === false) { setJugador(null); setPantalla('ingreso'); }
+      return;
+    }
     setIdx(r.respondidas);
     setMarcas(r.marcas);
     setUltimaRes(null);
@@ -331,8 +340,15 @@ export default function App() {
     setIdx((i) => i + 1);
   };
 
+  // Error al guardar una respuesta: si la sesión venció, se pide la cédula de nuevo.
+  const onErrorRespuesta = useCallback((r) => {
+    mostrarAviso(r.error || 'No se pudo guardar tu respuesta. Intenta de nuevo.');
+    if (r.sesion === false) { setJugador(null); setPantalla('ingreso'); }
+  }, []);
+
   const salir = () => {
     clic();
+    api.salir();
     if (pantalla === 'juego') mostrarAviso('Tu progreso quedó guardado. Puedes continuar cuando quieras.');
     setJugador(null);
     setPantalla('inicio');
@@ -366,7 +382,7 @@ export default function App() {
           onIngresar={(j) => { clic(); setJugador(j); iniciarPartida(j); }} />
       )}
       {pantalla === 'juego' && jugador && (
-        <Juego key={idx} jugador={jugador} idx={idx} marcas={marcas} onRespondida={onRespondida} onSiguiente={siguiente} />
+        <Juego key={idx} jugador={jugador} idx={idx} marcas={marcas} onRespondida={onRespondida} onSiguiente={siguiente} onError={onErrorRespuesta} />
       )}
       {pantalla === 'resultado' && ultimaRes && (
         <Resultado resumen={ultimaRes.resumen} jugador={jugador} onOtraVez={jugar}
