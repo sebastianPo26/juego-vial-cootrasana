@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#00664F" />
+    <title>¿Quién quiere ser un conductor ejemplar? · Cootrasana</title>
+    <link rel="icon" type="image/svg+xml" href="./brand/favicon.svg" />
+    <!--
+      Tipografía corporativa (Manual de identidad, pág. 6-7): familia Swis721 BT.
+      Archivos en public/fonts/ (tomados de swias.rar):
+        Swis721HvBT.ttf    -> Swis721 Hv BT (Heavy)
+        Swis721LtBT.ttf    -> Swis721 Lt BT (Light)
+        Swis721LtItBT.ttf  -> Swis721 Lt BT Italic
+      El paquete no trae "Black BT Italic" ni "Hv BT Italic": se usan con la Heavy
+      y el navegador aplica la inclinación (font-style: italic en el CSS).
+      Si consiguen Swis721BlkItBT.ttf, basta con copiarlo en public/fonts/ y cambiar
+      la url de la primera regla.
+    -->
+    <style>
+      @font-face{font-family:'Swis721 BlkIt BT';font-style:normal;font-weight:900;font-display:swap;
+        src:url('./fonts/Swis721HvBT.ttf') format('truetype');}
+      @font-face{font-family:'Swis721 Hv BT';font-style:normal;font-weight:700;font-display:swap;
+        src:url('./fonts/Swis721HvBT.ttf') format('truetype');}
+      @font-face{font-family:'Swis721 Lt BT';font-style:normal;font-weight:400;font-display:swap;
+        src:url('./fonts/Swis721LtBT.ttf') format('truetype');}
+      @font-face{font-family:'Swis721 Lt BT';font-style:italic;font-weight:400;font-display:swap;
+        src:url('./fonts/Swis721LtItBT.ttf') format('truetype');}
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
