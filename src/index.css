@@ -61,6 +61,11 @@ b,strong{font-family:var(--f-texto);font-weight:700}
 .barra-sup > *{pointer-events:auto}
 .barra-der{display:flex;align-items:center;gap:8px}
 .logo-barra{width:78px}
+.marcas-barra{display:flex;align-items:center;gap:12px}
+.placa-barra{width:50px;height:auto;filter:drop-shadow(0 4px 10px rgba(0,0,0,.45))}
+/* Placa "Seguridad Vial" en la esquina (inicio y cédula), como en la página anterior */
+.placa-esquina{position:fixed;right:clamp(12px,2.5vw,28px);bottom:clamp(12px,2.5vw,24px);z-index:5;width:clamp(76px,9vw,120px);height:auto;
+  pointer-events:none;filter:drop-shadow(0 8px 20px rgba(0,0,0,.5));animation:aparecer .5s ease both}
 .chip-jugador{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 14px;border-radius:999px;
   border:1px solid var(--linea);background:rgba(255,255,255,.04);font-family:var(--f-texto);font-size:.88rem;white-space:nowrap}
 .chip-jugador .ico{width:16px;height:16px;color:var(--verde-claro)}

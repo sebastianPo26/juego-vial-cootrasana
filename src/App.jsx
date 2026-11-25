@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Logo from './components/Logo';
 import Icono from './components/Icono';
+import placaSeguridadVial from './assets/brand/seguridad-vial.png';
 import { PREGUNTAS, PUNTOS_POR_ACIERTO } from './data/preguntas';
 import * as api from './lib/datos';
 import { alternarSonido, clic, instalarSonido, sonar, sonidoActivo } from './lib/sonido';
@@ -358,8 +359,17 @@ export default function App() {
     <>
       <div className="escenario" aria-hidden="true"><i className="foco" /><i className="anillos" /></div>
 
+      {(pantalla === 'inicio' || pantalla === 'ingreso') && (
+        <img className="placa-esquina" src={placaSeguridadVial} alt="Seguridad Vial" />
+      )}
+
       <header className="barra-sup">
-        {pantalla === "juego" || pantalla === "resultado" ? <Logo className="logo-barra" /> : <span />}
+        {pantalla === "juego" || pantalla === "resultado"
+          ? <div className="marcas-barra">
+              <Logo className="logo-barra" />
+              <img className="placa-barra" src={placaSeguridadVial} alt="Seguridad Vial" />
+            </div>
+          : <span />}
         <div className="barra-der">
           {jugador && (
             <span className="chip-jugador"><Icono nombre="usuario" /> {jugador.nombre}</span>
